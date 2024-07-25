@@ -62,6 +62,7 @@ namespace HungwX
         {
             levelController.LoadLevel(1);
             Score = 0;
+            OnLevelLoadCompleteEvent?.Invoke();
         }
 
         public void SetMobileInput(bool value)
@@ -153,12 +154,14 @@ namespace HungwX
             Score = 0;
             popupHandler.OnAnimationFinished = levelController.LoadCurrentLevel;
             eventTrigger.enabled = true;
+            OnLevelLoadCompleteEvent?.Invoke();
         }
 
         public void ResetCurrentLevel()
         {
             NumberOfCompletedPoints = 0;
             OnLevelReplay?.Invoke();
+            StartCoroutine(Reset());
             foreach (var styling in alternateStylings)
             {
                 if (!styling.isStylingComplete)
@@ -166,6 +169,12 @@ namespace HungwX
                     styling.ResetAlternateStyling();
                 }
             }
+        }
+
+        IEnumerator Reset()
+        {
+            yield return new WaitForSeconds(0.21f);
+            OnLevelLoadCompleteEvent?.Invoke();
         }
 
         public void LoadNextLevel()
