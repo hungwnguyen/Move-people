@@ -4,9 +4,10 @@ using UnityEngine.Events;
 
 namespace HungwX
 {
+   
     public class LevelManager : MonoBehaviour
     {
-        [SerializeField] private UnityEvent _onLevelComplete = default;
+        [Space(5f),SerializeField, Tooltip("Call when level completed!"), Header("Call when level completed!"), Space(10f)] private UnityEvent _onLevelComplete = default;
         [SerializeField] private UnityEvent OnLevelReplay = default;
         [SerializeField] private UnityEvent OnLevelLoadComplete = default;
         [SerializeField] private UnityEvent OnCallAffterSeconds = default;

@@ -1,4 +1,3 @@
-using DG.Tweening.Core.Easing;
 using UnityEngine;
 
 namespace HungwX
@@ -7,7 +6,7 @@ namespace HungwX
     {
         [SerializeField] float threshold = 0.5f;
 
-        protected override void OnMouthGuidePointPressed(int i)
+        protected void OnEyeGuidePointPressed(int i)
         {
             BodyPart bodyPart = guidePoints[i].winZone.bodyPart;
             float percent = guidePoints[i].perCentWeightInWorld.y;
@@ -21,6 +20,16 @@ namespace HungwX
                 blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.MouthRight ? RightIndex[2] : LeftIndex[2], 0);
                 blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.MouthRight ? RightIndex[3] : LeftIndex[3], threshold - percent);
             }
+        }
+
+        public void AddEventMouthLeftGuidePointPressed()
+        {
+            guidePointManager.OnMouthLeftGuidePointPressed += OnEyeGuidePointPressed;
+        }
+
+        public void AddEventMouthRightGuidePointPressed()
+        {
+            guidePointManager.OnMouthRightGuidePointPressed += OnEyeGuidePointPressed;
         }
     }
 }

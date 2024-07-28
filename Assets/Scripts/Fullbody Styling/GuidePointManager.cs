@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
 using MoreMountains.NiceVibrations;
+
 namespace HungwX
 {
     public enum SpaceDimension
@@ -11,7 +12,6 @@ namespace HungwX
         XZ,
         YZ
     }
-    public delegate void EventPress(int i);
 
     /// <summary>
     /// GuidePointManager can only be used while this tranform.rotattion is 0,0,0
@@ -29,13 +29,16 @@ namespace HungwX
         private int targetIndexPressed;
         private MobileInputManager mobileInputManager;
         private int countVibration = 0;
-        public EventPress OnMouthLeftGuidePointPressed,
+        public Action<int> OnMouthLeftGuidePointPressed,
             OnMouthRightGuidePointPressed,
             OnEyeLeftGuidePointPressed,
             OnEyeRightGuidePointPressed,
             OnPointerUpAction,
             OnBackRightGuidePointPressed,
-            OnBackLeftGuidePointPressed;
+            OnBackLeftGuidePointPressed,
+            OnHeadGuidePointPressed,
+            OnGuidePointUp,
+            OnGuidePointDown;
 
         IEnumerator Start()
         {
@@ -88,14 +91,17 @@ namespace HungwX
             HandleGuidePointMove(index);
         }
 
-        private void OnPointerUp()
+        public void OnPointerUp()
         {
             if (targetIndexPressed != -1)
+            {
                 OnPointerUpAction?.Invoke(targetIndexPressed);
+                OnGuidePointUp?.Invoke(targetIndexPressed);
+            }
             mobileInputManager.isPointerDown = false;
         }
 
-        private void OnPointerDown()
+        public void OnPointerDown()
         {
             float minDistance = float.MaxValue;
             targetIndexPressed = -1;
@@ -110,12 +116,13 @@ namespace HungwX
                 }
             }
             if (targetIndexPressed == -1) return;
+            OnGuidePointDown?.Invoke(targetIndexPressed);
             Animator targetAnimator = guidePointImages[targetIndexPressed].GetComponent<Animator>();
             targetAnimator.speed = 1;
             targetAnimator.Play("Pressed");
         }
 
-        private void OnPointerMove()
+        public void OnPointerMove()
         {
             if (targetIndexPressed == -1) return;
             // Get the current and start positions in world space
@@ -225,6 +232,38 @@ namespace HungwX
             else
             {
                 guidePoints[index].perCentWeightInWorld.z = 0;
+            }
+        }
+
+        public void CalculateHeadPercentWeith(int index)
+        {
+            Vector3 currentGuidePointPos = guidePoints[index].guidePointPos.position;
+            Vector3 worldTopRight = guidePoints[index].winZone.worldTopRight;
+            Vector3 worldBottomLeft = guidePoints[index].winZone.worldBottomLeft;
+            if (currentGuidePointPos.z > worldBottomLeft.z && currentGuidePointPos.z < worldTopRight.z)
+            {
+                guidePoints[index].perCentWeightInWorld.z = currentGuidePointPos.z - (worldTopRight.z - worldBottomLeft.z) / 2;
+            }
+            else if (currentGuidePointPos.z < worldBottomLeft.z)
+            {
+                guidePoints[index].perCentWeightInWorld.z = -(worldTopRight.z - worldBottomLeft.z) / 2;
+            }
+            else if (currentGuidePointPos.z > worldTopRight.z)
+            {
+                guidePoints[index].perCentWeightInWorld.z = (worldTopRight.z - worldBottomLeft.z) / 2;
+            }
+
+            if (currentGuidePointPos.x > worldBottomLeft.x && currentGuidePointPos.x < worldTopRight.x)
+            {
+                guidePoints[index].perCentWeightInWorld.x = currentGuidePointPos.x - (worldTopRight.x - worldBottomLeft.x) / 2;
+            }
+            else if (currentGuidePointPos.x < worldBottomLeft.x)
+            {
+                guidePoints[index].perCentWeightInWorld.x = -(worldTopRight.x - worldBottomLeft.x) / 2;
+            }
+            else if (currentGuidePointPos.x > worldTopRight.x)
+            {
+                guidePoints[index].perCentWeightInWorld.x = (worldTopRight.x - worldBottomLeft.x) / 2;
             }
         }
 

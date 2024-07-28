@@ -8,7 +8,7 @@ namespace HungwX
         public override float CalculateStylingScore(int i)
         {
             //gameManager.Score += 1f;
-            gameManager.Score += 0.016f;
+            gameManager.Score += 0.01f;
             SuperAnimator.SetRuntimeAnimationKeyFrame(guidePointManager.guidePointImages[i].GetComponent<Animator>(), "GuidePoint", gameManager.Score / 2);
             if (CheckScoreTarget(1))
             {

@@ -37,6 +37,7 @@ namespace HungwX
             {
                 Destroy(gameObject);
             }
+            OnLevelCompleteEvent.AddListener(PlayMusicWin);
         }
 
         void Start()
@@ -107,7 +108,6 @@ namespace HungwX
             if (NumberOfCompletedPoints == numberOfStylings)
             {
                 OnLevelCompleteEvent?.Invoke();
-                PlayMusicWin();
             }
         }
 
@@ -122,6 +122,9 @@ namespace HungwX
                     break;
                 case 2:
                     SoundManager.CreatePlayFXSound(SoundManager.Instance.audioClip.Happy2);
+                    break;
+                default:
+                    SoundManager.CreatePlayFXSound(SoundManager.Instance.audioClip.Happy3);
                     break;
             }
         }

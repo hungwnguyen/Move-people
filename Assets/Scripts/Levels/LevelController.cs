@@ -34,22 +34,19 @@ namespace HungwX
             }
             if (CurrentLevelID == -1)
                 CurrentLevelID = PlayerPrefs.GetInt("CurrentLevel", 1);
-            gameManager = GameManager.Instance;
         }
 
         void Start()
         {
+            gameManager = GameManager.Instance;
             LoadLevel(CurrentLevelID);
         }
 
         public void LoadNextLevel()
         {
             CurrentLevelID++;
-            if (CurrentLevelID <= _levelDatas.Count)
-            {
-                PlayerPrefs.SetInt("CurrentLevel", CurrentLevelID);
-                LoadCurrentLevel();
-            }
+            PlayerPrefs.SetInt("CurrentLevel", CurrentLevelID);
+            LoadCurrentLevel();
         }
 
         public void LoadCurrentLevel()
@@ -57,13 +54,13 @@ namespace HungwX
             SoundManager.PauseAllMusic();
             ReleaseLevel();
             gameManager.SetCurrentLevel();
-            Camera.main.backgroundColor = _levelDatas[CurrentLevelID - 1].levelCameraColor;
+            Camera.main.backgroundColor = _levelDatas[CurrentLevelID - 1 > 2 ? 2 : CurrentLevelID - 1].levelCameraColor;
             OnLoadNextLevel?.Invoke();
             if (levelType == LevelType.Regular)
             {
-                prefabOfLevel = _levelDatas[CurrentLevelID - 1].prefabOfLevel;
+                prefabOfLevel = _levelDatas[CurrentLevelID - 1 > 2 ? 2 : CurrentLevelID - 1].prefabOfLevel;
                 prefabOfLevel.InstantiateAsync().Completed += OnAddressableLoadComplete;
-                titleContent.SetEntry(_levelDatas[CurrentLevelID - 1].titleContent);
+                titleContent.SetEntry(_levelDatas[CurrentLevelID - 1 > 2 ? 2 : CurrentLevelID - 1].titleContent);
             }
         }
 

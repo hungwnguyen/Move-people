@@ -11,6 +11,7 @@ namespace HungwX
         EyeRight,
         BackLeft,
         BackRight,
+        Head,
     }
 
     public enum TargetDirectionX

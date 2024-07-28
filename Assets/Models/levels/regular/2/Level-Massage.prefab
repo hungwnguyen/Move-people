@@ -366,8 +366,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.8, y: 4.0032516, z: 0}
-  m_Center: {x: 0, y: 1.1016257, z: 0}
+  m_Size: {x: 3.552637, y: 3.9738503, z: 0}
+  m_Center: {x: -0.00039982796, y: 1.1013298, z: 0}
 --- !u!114 &8532898152882618912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -380,19 +380,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4643c43ec46e15042b98640e9ac23549, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  worldTopRight: {x: 0.74999994, y: 11.103251, z: -14.5}
-  worldBottomLeft: {x: -1.05, y: 7.1, z: -14.5}
-  winPos: {x: -0.15000004, y: 9.101625, z: -14.5}
-  centerX: -0.15000004
-  centerY: 9.101625
+  worldTopRight: {x: 1.6259186, y: 11.088255, z: -14.5}
+  worldBottomLeft: {x: -1.9267185, y: 7.1144047, z: -14.5}
+  winPos: {x: -0.15039986, y: 9.10133, z: -14.5}
+  centerX: -0.15039986
+  centerY: 9.10133
   centerZ: -14.5
-  maxY: 11.103251
-  minY: 7.1
-  maxX: 0.74999994
-  minX: -1.05
+  maxY: 11.088255
+  minY: 7.1144047
+  maxX: 1.6259186
+  minX: -1.9267185
   maxZ: -14.5
   minZ: -14.5
-  bodyPart: 0
+  bodyPart: 6
   guidePointManager: {fileID: 8868019536525161226}
 --- !u!1 &1057635541837430
 GameObject:
@@ -3692,6 +3692,19 @@ MonoBehaviour:
           m_StringArgument: dance
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 9102334973065738798}
+        m_TargetAssemblyTypeName: UnityEngine.Animations.Rigging.RigConstraint`3[[UnityEngine.Animations.Rigging.MultiAimConstraintJob,
+          Unity.Animation.Rigging
+        m_MethodName: set_weight
+        m_Mode: 4
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0.6
+          m_StringArgument: dance
+          m_BoolArgument: 0
+        m_CallState: 2
   OnLevelReplay:
     m_PersistentCalls:
       m_Calls: []
@@ -3972,8 +3985,8 @@ SkinnedMeshRenderer:
   - 0
   - 0
   - 0
-  - 50
-  - 50
+  - 0
+  - 0
   - 0
   - 0
   - 0
@@ -6966,13 +6979,13 @@ MonoBehaviour:
   guidePoints:
   - guidePointPos: {fileID: 4090758945259520}
     startPos: {x: -0.15000004, y: 8, z: -14.5}
-    startGuidePointImagePos: {x: -554.0639, y: -1801.8534, z: 6.197569}
+    startGuidePointImagePos: {x: -550.54596, y: -1779.9524, z: 6.197569}
     score: 0
     perCentWeightInWorld: {x: 0, y: 0, z: 0}
-    centerPosInWorld: {x: -0.15000004, y: 9.101625, z: -14.5}
-    distanceInWorld: {x: 0.9, y: 2.0016258, z: 0}
-    maxPosInWorld: {x: 0.74999994, y: 11.103251, z: -14.5}
-    minPosInWorld: {x: -1.05, y: 7.1, z: -14.5}
+    centerPosInWorld: {x: -0.15039986, y: 9.10133, z: -14.5}
+    distanceInWorld: {x: 1.7763186, y: 1.9869251, z: 0}
+    maxPosInWorld: {x: 1.6259186, y: 11.088255, z: -14.5}
+    minPosInWorld: {x: -1.9267185, y: 7.1144047, z: -14.5}
 --- !u!1 &2067657272414908269
 GameObject:
   m_ObjectHideFlags: 0
@@ -9829,7 +9842,7 @@ MonoBehaviour:
       m_Length: 1
       m_Item0:
         transform: {fileID: 4090758945259520}
-        weight: 1
+        weight: 0.4
       m_Item1:
         transform: {fileID: 0}
         weight: 0

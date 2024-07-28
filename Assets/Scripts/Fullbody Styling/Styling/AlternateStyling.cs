@@ -56,26 +56,6 @@ namespace HungwX
             gameManager.AddNewAlternateStyling(this);
         }
 
-        public void AddEventMouthLeftGuidePointPressed()
-        {
-            guidePointManager.OnMouthLeftGuidePointPressed += OnMouthGuidePointPressed;
-        }
-
-        public void AddEventMouthRightGuidePointPressed()
-        {
-            guidePointManager.OnMouthRightGuidePointPressed += OnMouthGuidePointPressed;
-        }
-
-        public void AddEventBackLeftGuidePointPressed()
-        {
-            guidePointManager.OnBackLeftGuidePointPressed += OnBackGuidePointPressed;
-        }
-
-        public void AddEventBackRightGuidePointPressed()
-        {
-            guidePointManager.OnBackRightGuidePointPressed += OnBackGuidePointPressed;
-        }
-
         public void AddEventCheckOnPointerUpAction()
         {
             guidePointManager.OnPointerUpAction += CheckStyling;
@@ -193,26 +173,6 @@ namespace HungwX
             }
             return scrore;
         }
-        protected virtual void OnBackGuidePointPressed(int i)
-        {
-            ResetBlendShapeWeight();
-            BodyPart bodyPart = guidePoints[i].winZone.bodyPart;
-            float perCent = guidePoints[i].perCentWeightInWorld.z;
-            int index = (int)perCent;
-            if (perCent == 0) return;
-            if (index == 0)
-            {
-                blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.BackLeft ? LeftIndex[index] : RightIndex[index], perCent - index);
-            }
-            else if (index == 9)
-            {
-                blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.BackLeft ? LeftIndex[index] : RightIndex[index], 1 - perCent + index);
-            }
-            else
-            {
-                blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.BackLeft ? LeftIndex[index] : RightIndex[index], 1);
-            }
-        }
 
         protected void StylingComplete()
         {
@@ -222,42 +182,6 @@ namespace HungwX
             gameManager.Score = 0;
             gameManager.progressController.UpdatePosition(0);
             MobileInputManager.Instance.ResetMobileInput();
-        }
-
-        protected void ResetBlendShapeWeight()
-        {
-            for (int i = 0; i < LeftIndex.Length; i++)
-            {
-                blendShapeHandle.SetBlendShapeWeight(LeftIndex[i], 0);
-                blendShapeHandle.SetBlendShapeWeight(RightIndex[i], 0);
-            }
-        }
-
-        protected virtual void OnMouthGuidePointPressed(int i)
-        {
-            BodyPart bodyPart = guidePoints[i].winZone.bodyPart;
-            switch (guidePoints[i].targetDirectionX)
-            {
-                case TargetDirectionX.Left:
-                    blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.MouthLeft ? LeftIndex[1] : RightIndex[1], 0);
-                    blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.MouthLeft ? LeftIndex[0] : RightIndex[0], guidePoints[i].perCentWeightInWorld.x);
-                    break;
-                case TargetDirectionX.Right:
-                    blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.MouthLeft ? LeftIndex[0] : RightIndex[0], 0);
-                    blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.MouthLeft ? LeftIndex[1] : RightIndex[1], guidePoints[i].perCentWeightInWorld.x);
-                    break;
-            }
-            switch (guidePoints[i].targetDirectionY)
-            {
-                case TargetDirectionY.Up:
-                    blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.MouthLeft ? LeftIndex[3] : RightIndex[3], 0);
-                    blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.MouthLeft ? LeftIndex[2] : RightIndex[2], guidePoints[i].perCentWeightInWorld.y);
-                    break;
-                case TargetDirectionY.Down:
-                    blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.MouthLeft ? LeftIndex[2] : RightIndex[2], 0);
-                    blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.MouthLeft ? LeftIndex[3] : RightIndex[3], guidePoints[i].perCentWeightInWorld.y);
-                    break;
-            }
         }
     }
 }
