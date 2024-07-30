@@ -43,6 +43,11 @@ namespace HungwX
         void Start()
         {
             levelController = LevelController.Instance;
+            if (levelController == null)
+            {
+                Debug.LogError("LevelController is missing in the scene");
+                return;
+            }
             levelController.OnLevelLoadComplete = OnLevelLoadComplete;
             SetCurrentLevel();
         }
@@ -176,7 +181,7 @@ namespace HungwX
 
         IEnumerator Reset()
         {
-            yield return new WaitForSeconds(0.21f);
+            yield return new WaitForSeconds(0.2f);
             OnLevelLoadCompleteEvent?.Invoke();
         }
 
