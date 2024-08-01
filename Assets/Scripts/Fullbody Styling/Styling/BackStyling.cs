@@ -1,5 +1,6 @@
 using SuperPack;
 using System.Collections;
+using UnityEditor;
 using UnityEngine;
 
 namespace HungwX
@@ -7,33 +8,73 @@ namespace HungwX
     public class BackStyling : AlternateStyling
     {
         float time;
+        bool isPress = false;
+        bool isResset = false;
+        BodyPart bodyPart;
         protected override void Start()
         {
             base.Start();
-            /*guidePointManager.OnGuidePointDown += PlayAnimationPress;
-            guidePointManager.OnGuidePointUp += PlayAnimationUp;*/
+            guidePointManager.OnGuidePointDown += PlayAnimationPress;
+            guidePointManager.OnGuidePointUp += PlayAnimationUp;
         }
 
-        /*private void PlayAnimationUp(int i)
+        private void PlayAnimationUp(int i)
         {
-            StartCoroutine(PlayAnimationPressCoroutine(i, true));
+            StopAllCoroutines();
+            StartCoroutine(PlayAnimationResetWeightCoroutine(i));
         }
 
         private void PlayAnimationPress(int i)
         {
-            StartCoroutine(PlayAnimationPressCoroutine(i));
-        }*/
+            isPress = true;
+            isResset = true;
+            guidePointManager.HandleGuidePointMove(i);
+        }
 
-        IEnumerator PlayAnimationPressCoroutine(int i, bool isReverse = false)
+        IEnumerator PlayAnimationResetWeightCoroutine(int i)
         {
-            float time = 0.15f + (isReverse ? -0.15f : 0.15f);
-            BodyPart bodyPart = guidePoints[i].winZone.bodyPart;
-            while (time < 0.3)
+            float time = 0.3f;
+            bodyPart = guidePoints[i].winZone.bodyPart;
+            if (bodyPart == BodyPart.BackLeft)
             {
-                time += Time.deltaTime * (isReverse ? -1 : 1);
-                blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.BackLeft ? LeftIndex[i] : RightIndex[i], time / 0.3f);
-                yield return new WaitForSeconds(0.01f);
+                for (int index = 0; index < 10; index++)
+                {
+                    float weight = blendShapeHandle.GetBlendShapeWeight(LeftIndex[index]);
+                    while(weight > 0)
+                    {
+                        weight -= Time.deltaTime / time;
+                        blendShapeHandle.SetBlendShapeWeight(LeftIndex[index], weight);
+                        yield return new WaitForEndOfFrame();
+                    }
+                    blendShapeHandle.SetBlendShapeWeight(LeftIndex[index], 0);
+                }
             }
+            else
+            {
+                for (int index = 0; index < 10; index++)
+                {
+                    float weight = blendShapeHandle.GetBlendShapeWeight(RightIndex[index]);
+                    while (weight > 0)
+                    {
+                        weight -= Time.deltaTime / time;
+                        blendShapeHandle.SetBlendShapeWeight(RightIndex[index], weight);
+                        yield return new WaitForEndOfFrame();
+                    }
+                    blendShapeHandle.SetBlendShapeWeight(RightIndex[index], 0);
+                }
+            }
+        }
+
+        IEnumerator PlayAnimationPressCoroutine(int[] arr, int index, float weight)
+        {
+            float startWeight = blendShapeHandle.GetBlendShapeWeight(arr[index]);
+            while(startWeight < weight)
+            {
+                startWeight += Time.deltaTime / 0.3f;
+                blendShapeHandle.SetBlendShapeWeight(arr[index], startWeight);
+                yield return new WaitForEndOfFrame();
+            }
+            blendShapeHandle.SetBlendShapeWeight(arr[index], weight);
         }
 
         public override float CalculateStylingScore(int i)
@@ -57,7 +98,7 @@ namespace HungwX
                 }
             }
             time += Time.deltaTime;
-           
+
             if (time > 0.6f && guidePoints[i].winZone.worldBottomLeft.z > guidePoints[i].guidePointPos.position.z)
             {
                 time = 0;
@@ -72,7 +113,8 @@ namespace HungwX
             {
                 return guidePoints[i].winZone.worldBottomLeft.z < guidePoints[i].guidePointPos.position.z
                     && guidePoints[i].winZone.worldTopRight.z > guidePoints[i].guidePointPos.position.z;
-            } else
+            }
+            else
             {
                 return false;
             }
@@ -95,35 +137,61 @@ namespace HungwX
 
         protected virtual void OnBackGuidePointPressed(int i)
         {
-            BodyPart bodyPart = guidePoints[i].winZone.bodyPart;
+            bodyPart = guidePoints[i].winZone.bodyPart;
             ResetBlendShapeWeight(bodyPart);
             float perCent = guidePoints[i].perCentWeightInWorld.z;
             int index = (int)perCent;
             if (perCent == 0) return;
-            if (index == 0)
+            if (isPress)
             {
-                blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.BackLeft ? LeftIndex[index] : RightIndex[index], perCent - index);
-            }
-            else if (index == 9)
+                isPress = false;
+                if (index == 0)
+                {
+                    StartCoroutine(PlayAnimationPressCoroutine(bodyPart == BodyPart.BackLeft ? LeftIndex : RightIndex, index, perCent - index));
+                }
+                else if (index == 9)
+                {
+                    StartCoroutine(PlayAnimationPressCoroutine(bodyPart == BodyPart.BackLeft ? LeftIndex : RightIndex, index, 1 - perCent + index));
+                }
+                else
+                {
+                    StartCoroutine(PlayAnimationPressCoroutine(bodyPart == BodyPart.BackLeft ? LeftIndex : RightIndex, index + 1, perCent - index));
+                    StartCoroutine(PlayAnimationPressCoroutine(bodyPart == BodyPart.BackLeft ? LeftIndex : RightIndex, index, 1 - perCent + index));
+                }
+            } else
             {
-                blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.BackLeft ? LeftIndex[index] : RightIndex[index], 1 - perCent + index);
+                if (isResset)
+                {
+                    isResset = false;
+                    StopAllCoroutines();
+                }
+                if (index == 0)
+                {
+                    blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.BackLeft ? LeftIndex[index] : RightIndex[index], perCent - index);
+                }
+                else if (index == 9)
+                {
+                    blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.BackLeft ? LeftIndex[index] : RightIndex[index], 1 - perCent + index);
+                }
+                else
+                {
+                    blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.BackLeft ? LeftIndex[index + 1] : RightIndex[index + 1], perCent - index);
+                    blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.BackLeft ? LeftIndex[index] : RightIndex[index], 1 - perCent + index);
+                }
             }
-            else
-            {
-                blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.BackLeft ? LeftIndex[index + 1] : RightIndex[index + 1], perCent - index);
-                blendShapeHandle.SetBlendShapeWeight(bodyPart == BodyPart.BackLeft ? LeftIndex[index] : RightIndex[index], 1 - perCent + index);
-            }
+            
         }
 
         private void ResetBlendShapeWeight(BodyPart bodyPart)
         {
             if (bodyPart == BodyPart.BackLeft)
             {
-                for(int index = 0; index < 10; index++)
+                for (int index = 0; index < 10; index++)
                 {
                     blendShapeHandle.SetBlendShapeWeight(LeftIndex[index], 0);
                 }
-            } else
+            }
+            else
             {
                 for (int index = 0; index < 10; index++)
                 {

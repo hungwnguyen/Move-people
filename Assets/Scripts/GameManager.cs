@@ -45,7 +45,7 @@ namespace HungwX
             levelController = LevelController.Instance;
             if (levelController == null)
             {
-                Debug.LogError("LevelController is missing in the scene");
+                Debug.LogWarning("LevelController is missing in the scene");
                 return;
             }
             levelController.OnLevelLoadComplete = OnLevelLoadComplete;

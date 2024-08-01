@@ -4,7 +4,6 @@ using UnityEngine;
 using System.Collections;
 using MoreMountains.NiceVibrations;
 using System.Linq;
-using DG.Tweening.Core.Easing;
 
 namespace HungwX
 {
@@ -14,7 +13,7 @@ namespace HungwX
         XZ,
         YZ,
     }
-
+    public delegate bool CheckScreenPointAction(int index);
     /// <summary>
     /// GuidePointManager can only be used while this tranform.rotattion is 0,0,0
     /// </summary>
@@ -30,19 +29,30 @@ namespace HungwX
         private Camera mainCamera;
         private int targetIndexPressed;
         private MobileInputManager mobileInputManager;
-        private int countVibration = 0;
+        private int countVibration = 0, frequency = 4;
         private GameManager gameManager;
         [SerializeField] private bool isUpdateAllGuidePoint = false;
+        public CheckScreenPointAction CheckScreenPoint;
         public Action<int> OnMouthLeftGuidePointPressed,
             OnMouthRightGuidePointPressed,
             OnEyeLeftGuidePointPressed,
             OnEyeRightGuidePointPressed,
-            OnPointerUpAction,
             OnBackRightGuidePointPressed,
             OnBackLeftGuidePointPressed,
             OnHeadGuidePointPressed,
             OnGuidePointUp,
-            OnGuidePointDown;
+            OnGuidePointDown,
+            OnGuidePointMove;
+
+        private void Awake()
+        {
+            CheckScreenPoint = DefaultCheck;
+        }
+
+        private bool DefaultCheck(int index)
+        {
+            return true;
+        }
 
         IEnumerator Start()
         {
@@ -110,7 +120,6 @@ namespace HungwX
         {
             if (targetIndexPressed != -1)
             {
-                OnPointerUpAction?.Invoke(targetIndexPressed);
                 OnGuidePointUp?.Invoke(targetIndexPressed);
             }
             mobileInputManager.isPointerDown = false;
@@ -162,30 +171,36 @@ namespace HungwX
                     YZAxisMove(newWorldPosition);
                     break;
             }
-            if (isUpdateAllGuidePoint)
-            {
-                for (int i = 0; i < guidePoints.Count; i++)
-                {
-                    guidePointImages[i].transform.position = mainCamera.WorldToScreenPoint(guidePoints[i].guidePointPos.position);
-                }
-            }
-            else
+            if (!isUpdateAllGuidePoint)
             {
                 guidePointImages[targetIndexPressed].transform.position = mainCamera.WorldToScreenPoint(guidePoints[targetIndexPressed].guidePointPos.position);
             }
             countVibration++;
-            if (countVibration == 7)
+            if (countVibration == frequency)
             {
                 MMVibrationManager.Haptic(HapticTypes.Selection, false, true, this);
                 countVibration = 0;
+                frequency = frequency < 8 ? frequency + 1 : 4;
             }
+            OnGuidePointMove?.Invoke(targetIndexPressed);
             HandleGuidePointMove(targetIndexPressed);
             gameManager.UpdateScore(targetIndexPressed);
         }
 
+        public void UpdateAllGuidePointImage()
+        {
+            if (guidePointImages == null)
+                return;
+            for (int i = 0; i < guidePoints.Count; i++)
+            {
+                guidePointImages[i].transform.position = mainCamera.WorldToScreenPoint(guidePoints[i].guidePointPos.position);
+            }
+        }
+
         private void YZAxisMove(Vector3 newWorldPosition)
         {
-            guidePoints[targetIndexPressed].guidePointPos.position = new Vector3(guidePoints[targetIndexPressed].guidePointPos.position.x, newWorldPosition.y, newWorldPosition.z);
+            if (CheckScreenPoint(targetIndexPressed))
+                guidePoints[targetIndexPressed].guidePointPos.position = new Vector3(guidePoints[targetIndexPressed].guidePointPos.position.x, newWorldPosition.y, newWorldPosition.z);
         }
 
         private void XZAxisMove(Vector3 newWorldPosition)

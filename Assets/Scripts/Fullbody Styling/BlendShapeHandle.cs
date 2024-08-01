@@ -20,7 +20,7 @@ namespace HungwX
             skinnedMeshRenderer.SetBlendShapeWeight(index, maxWeight * perCentWeight);
         }
 
-        public float GetBlendShapeWeigh(int index)
+        public float GetBlendShapeWeight(int index)
         {
             return skinnedMeshRenderer.GetBlendShapeWeight(index) / maxWeight;
         }

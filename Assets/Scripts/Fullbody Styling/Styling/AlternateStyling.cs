@@ -58,12 +58,12 @@ namespace HungwX
 
         public void AddEventCheckOnPointerUpAction()
         {
-            guidePointManager.OnPointerUpAction += CheckStyling;
+            guidePointManager.OnGuidePointUp += CheckStyling;
         }
 
         public void AddEventResetGuidPointOnPointerUp()
         {
-            guidePointManager.OnPointerUpAction += ResetGuidPointImage;
+            guidePointManager.OnGuidePointUp += ResetGuidPointImage;
         }
 
         public virtual void ResetAlternateStyling()

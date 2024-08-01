@@ -1,4 +1,5 @@
 using RootMotion.Dynamics;
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -10,7 +11,15 @@ namespace HungwX
         [SerializeField, Range(0, 1)] private float pinWeightDrag = 0.5f;
         [SerializeField, Range(0, 1)] private float pinWeightDrop = 0.38f;
         [SerializeField] private GameObject charModel = default;
-        [SerializeField] private Transform charStartPosition = default, currentPosition = default, puppetPos = default;
+        [SerializeField] private Transform charStartPosition = default, puppetStartPos = default, currentPosition = default, puppetPos = default;
+        public static CharController Instance;
+        public Action OnCharPosReset;
+
+        private void Awake()
+        {
+            Instance = this;
+        }
+
         void Start()
         {
             GameManager.Instance.OnLevelReplay += ResetCharPos;
@@ -18,29 +27,29 @@ namespace HungwX
             MobileInputManager.Instance.OnPointerUpAction.AddListener(() => puppetMaster.pinWeight = pinWeightDrop);
         }
 
+        private void OnDestroy()
+        {
+            GameManager.Instance.OnLevelReplay -= ResetCharPos;
+        }
+
         private void ResetCharPos()
         {
             StartCoroutine(ResetCharPosCourountine());
         }
-        
+
         IEnumerator ResetCharPosCourountine()
         {
-            charModel.SetActive(false);
-            currentPosition.position = charStartPosition.position;
-            currentPosition.rotation = charStartPosition.rotation;
-            yield return new WaitForEndOfFrame();
-            puppetPos.position = charStartPosition.position;
-            puppetPos.rotation = charStartPosition.rotation;
-            charModel.SetActive(true);
-            puppetMaster.pinWeight = 1;
-            charModel.SetActive(false);
-            currentPosition.position = charStartPosition.position;
-            currentPosition.rotation = charStartPosition.rotation;
-            yield return new WaitForEndOfFrame();
-            puppetPos.position = charStartPosition.position;
-            puppetPos.rotation = charStartPosition.rotation;
-            charModel.SetActive(true);
-            puppetMaster.pinWeight = 1;
+            for (int i = 0; i < 4; i++)
+            {
+                charModel.SetActive(false);
+                currentPosition.position = charStartPosition.position;
+                currentPosition.rotation = charStartPosition.rotation;
+                puppetPos.position = puppetStartPos.position;
+                puppetPos.rotation = puppetStartPos.rotation;
+                yield return new WaitForEndOfFrame();
+                charModel.SetActive(true);
+                puppetMaster.pinWeight = 1;
+            }
         }
     }
 }

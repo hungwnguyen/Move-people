@@ -12,7 +12,8 @@ namespace HungwX
         BackLeft,
         BackRight,
         Head,
-        Leg
+        LegRight,
+        LegLeft,
     }
 
     public enum TargetDirectionX
