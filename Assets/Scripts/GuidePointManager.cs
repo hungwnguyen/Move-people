@@ -27,12 +27,12 @@ namespace HungwX
         private Transform parentOfGuidePoints;
         [NonSerialized] public List<GameObject> guidePointImages;
         private Camera mainCamera;
-        private int targetIndexPressed;
         private MobileInputManager mobileInputManager;
-        private int countVibration = 0, frequency = 4;
+        private int countVibration = 0, frequency = 4, targetIndexPressed;
         private GameManager gameManager;
         [SerializeField] private bool isUpdateAllGuidePoint = false;
         public CheckScreenPointAction CheckScreenPoint;
+        [NonSerialized] public int numberOfPointsSFX;
         public Action<int> OnMouthLeftGuidePointPressed,
             OnMouthRightGuidePointPressed,
             OnEyeLeftGuidePointPressed,
@@ -57,6 +57,7 @@ namespace HungwX
         IEnumerator Start()
         {
             SetWinZones();
+            numberOfPointsSFX = 0;
             mobileInputManager = MobileInputManager.Instance;
             this.parentOfGuidePoints = mobileInputManager.transform;
             mainCamera = Camera.main;
@@ -121,6 +122,8 @@ namespace HungwX
             if (targetIndexPressed != -1)
             {
                 OnGuidePointUp?.Invoke(targetIndexPressed);
+                SoundManager.CreatePlayFXSound(SoundManager.Instance.audioClip.bodyPartAudioClips[numberOfPointsSFX]);
+                numberOfPointsSFX = numberOfPointsSFX + 1 >= SoundManager.Instance.audioClip.bodyPartAudioClips.Count ? 0 : numberOfPointsSFX + 1;
             }
             mobileInputManager.isPointerDown = false;
         }

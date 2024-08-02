@@ -108,7 +108,6 @@ namespace HungwX
 
         public void UpdateNumberOfCompletedPoints()
         {
-            SoundManager.CreatePlayFXSound(SoundManager.Instance.audioClip.bodyPartAudioClips[NumberOfCompletedPoints]);
             NumberOfCompletedPoints++;
             if (NumberOfCompletedPoints == numberOfStylings)
             {
@@ -129,7 +128,7 @@ namespace HungwX
                     SoundManager.CreatePlayFXSound(SoundManager.Instance.audioClip.Happy2);
                     break;
                 default:
-                    SoundManager.CreatePlayFXSound(SoundManager.Instance.audioClip.Happy3);
+                    SoundManager.CreatePlayFXSound(SoundManager.Instance.audioClip.Happy4);
                     break;
             }
         }

@@ -95,6 +95,7 @@ namespace HungwX
                     ResetBlendShapeWeight(BodyPart.BackLeft);
                     ResetBlendShapeWeight(BodyPart.BackRight);
                     OnLevelComplete?.Invoke();
+                    SoundManager.CreatePlayFXSound(SoundManager.Instance.audioClip.Happy3);
                 }
             }
             time += Time.deltaTime;

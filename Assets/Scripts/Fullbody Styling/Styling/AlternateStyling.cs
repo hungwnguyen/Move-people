@@ -70,6 +70,7 @@ namespace HungwX
         {
             StopAllCoroutines();
             index = 0;
+            guidePointManager.numberOfPointsSFX = 0;
             gameManager.progressController.UpdatePosition(0);
 
             foreach (GuidePoint guidePoint in guidePoints)
@@ -182,6 +183,7 @@ namespace HungwX
             gameManager.Score = 0;
             gameManager.progressController.UpdatePosition(0);
             MobileInputManager.Instance.ResetMobileInput();
+            guidePointManager.numberOfPointsSFX = 0;
         }
     }
 }

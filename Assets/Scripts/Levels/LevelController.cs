@@ -88,7 +88,13 @@ namespace HungwX
             {
                 InstanceReference = handle.Result;
                 OnLevelLoadComplete?.Invoke();
-                SoundManager.CreatePlayFXSound(SoundManager.Instance.audioClip.BgRegularMusic[UnityEngine.Random.Range(0, SoundManager.Instance.audioClip.BgRegularMusic.Count)]);
+                if (CurrentLevelID < 3)
+                {
+                    SoundManager.CreatePlayFXSound(SoundManager.Instance.audioClip.BgRegularMusic[CurrentLevelID - 1]);
+                } else
+                {
+                    SoundManager.CreatePlayFXLoop(SoundManager.Instance.audioClip.BgRegularMusic[2]);
+                }
             }
             else
             {
