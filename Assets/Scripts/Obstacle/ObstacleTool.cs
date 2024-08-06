@@ -1,44 +1,57 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
+using UnityEditor;
 using UnityEngine;
 
 namespace HungwX
 {
-    [Serializable]
-    public class DataGame
-    {
-        public List<Obstacle> obstacleDatas = new List<Obstacle>();
-    }
+    [RequireComponent(typeof(ObstacleSpawner))]
     public class ObstacleTool : MonoBehaviour
     {
 #if UNITY_EDITOR
-        private List<int> obstacleList = new List<int>();
-        public List<GameObject> obstacleObjects = new List<GameObject>();
-        private GameObject currentObstacle;
-        private DataGame levelData;
+        private List<GameObject> obstacleObjects;
+        private ObstacleData obstacleData;
+        private ObstacleSpawner obstacleSpawner;
+        
+        private void GetObstacleObject()
+        {
+            obstacleObjects = new List<GameObject>();
+            print("Child count: " + this.transform.childCount);
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                obstacleObjects.Add(transform.GetChild(i).gameObject);
+            }
+        }
+
+        private void ClearCurrentObject()
+        {
+            for (int i = transform.childCount - 1; i >= 0; i--)
+            {
+                DestroyImmediate(transform.GetChild(i).gameObject);
+            }
+        }
 
         private void SetListObstacle(List<GameObject> obstaclesGameObject, int level, string dataPath)
         {
+            obstacleData= new ObstacleData();
+            obstacleData.Obstacles = new List<Obstacle>();
             foreach (GameObject obstacle in obstaclesGameObject)
             {
-                Obstacle obstacleData = new Obstacle
+                Obstacle _obstacle = new Obstacle
                 {
                     Type = obstacle.tag,
                     Position = obstacle.transform.position,
                     Rotation = obstacle.transform.eulerAngles,
                     Scale = obstacle.transform.localScale
                 };
-
-                Debug.Log($"Adding obstacle: Type={obstacleData.Type}, Position={obstacleData.Position}, Rotation={obstacleData.Rotation}, Scale={obstacleData.Scale}");
-                levelData.obstacleDatas.Add(obstacleData);
+                obstacleData.Obstacles.Add(_obstacle);
             }
             SaveLevelDataToJson(dataPath + $"/{level}.txt");
         }
 
         private void SaveLevelDataToJson(string filePath)
         {
-            string json = JsonUtility.ToJson(levelData);
+            string json = JsonUtility.ToJson(obstacleData);
             Debug.Log($"Saving level data to JSON: {json}");
 
             string directoryPath = Path.GetDirectoryName(filePath);
@@ -51,40 +64,50 @@ namespace HungwX
 
         public void SaveCurrentLevelData(int level, string dataPath)
         {
-            levelData = new DataGame();
+            GetObstacleObject();
             SetListObstacle(obstacleObjects, level, dataPath);
+        }
+
+        public void Spawn(List<Obstacle> database)
+        {
+            foreach (Obstacle data in database)
+            {
+
+                GameObject obj = PrefabUtility.InstantiatePrefab(obstacleSpawner.GetPrefabByType(data.Type)) as GameObject;
+                obj.transform.SetParent(transform);
+                if (data.Type.Equals("Crate"))
+                {
+                    obj.GetComponent<MeshRenderer>().material = obstacleSpawner.crateMaterials[Random.Range(0, obstacleSpawner.crateMaterials.Count)];
+                }
+                obj.transform.position = data.Position;
+                obj.transform.eulerAngles = data.Rotation;
+                obj.transform.localScale = data.Scale;
+            }
+        }
+
+        public void LoadCurrentLevelData(int level, string dataPath)
+        {
+            obstacleData = new ObstacleData();
+            obstacleSpawner = GetComponent<ObstacleSpawner>();
+            ClearCurrentObject();
+            string filePath = $"{dataPath}/{level}.txt";
+            if (File.Exists(filePath))
+            {
+                string json = File.ReadAllText(filePath);
+                obstacleData = JsonUtility.FromJson<ObstacleData>(json);
+                Spawn(obstacleData.Obstacles);
+                Debug.Log($"<color=green>Loaded level {PlayerPrefs.GetInt("LevelEditor", 1)} successfully</color>");
+            }
+            else
+            {
+                Debug.LogWarning($"Level data file '{filePath}' does not exist.");
+            }
         }
 
         public void Reset()
         {
-            obstacleList.Clear();
-            obstacleObjects.Clear();
+            ClearCurrentObject();
         }
-
-        public void UpdateObstacle(GameObject obstacle)
-        {
-            currentObstacle = obstacle;
-            if (obstacleList == null)
-            {
-                obstacleList = new List<int>();
-            }
-            if (!obstacleList.Contains(obstacle.GetHashCode()))
-            {
-                obstacleList.Add(obstacle.GetHashCode());
-                SetNewObstacle();
-                Debug.Log("Added new obstacle: " + obstacle.name);
-            }
-        }
-
-        private void SetNewObstacle()
-        {
-            if (obstacleObjects == null)
-            {
-                obstacleObjects = new List<GameObject>();
-            }
-            obstacleObjects.Add(currentObstacle);
-        }
-
 #endif
     }
 }

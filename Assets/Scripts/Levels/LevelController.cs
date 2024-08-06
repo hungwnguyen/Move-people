@@ -4,6 +4,7 @@ using UnityEngine.Localization.Components;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.AddressableAssets;
 using System;
+using System.Collections;
 
 namespace HungwX
 {
@@ -16,6 +17,9 @@ namespace HungwX
         public AssetReferenceGameObject prefabOfLevel { get; set; }
         public static LevelController Instance { get; set; }
         public Action OnLevelLoadComplete { get; set; }
+        /// <summary>
+        /// Call before OnLevelLoadComplete invoke
+        /// </summary>
         public Action OnLoadNextLevel { get; set; }
         public int CurrentLevelID { get => _currentLevelID; set => _currentLevelID = value; }
         [SerializeField] private int _currentLevelID = -1;
@@ -36,7 +40,7 @@ namespace HungwX
                 CurrentLevelID = PlayerPrefs.GetInt("CurrentLevel", 1);
         }
 
-        void Start()
+        private void Start()
         {
             gameManager = GameManager.Instance;
             LoadLevel(CurrentLevelID);
@@ -90,10 +94,10 @@ namespace HungwX
                 OnLevelLoadComplete?.Invoke();
                 if (CurrentLevelID < 3)
                 {
-                    SoundManager.CreatePlayFXSound(SoundManager.Instance.audioClip.BgRegularMusic[CurrentLevelID - 1]);
+                    SoundManager.CreatePlayBgMusic(SoundManager.Instance.audioClip.BgRegularMusic[CurrentLevelID - 1]);
                 } else
                 {
-                    SoundManager.CreatePlayFXLoop(SoundManager.Instance.audioClip.BgRegularMusic[2]);
+                    SoundManager.CreatePlayBgMusic(SoundManager.Instance.audioClip.BgRegularMusic[2]);
                 }
             }
             else

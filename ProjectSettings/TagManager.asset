@@ -4,17 +4,15 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - FxTemporaire
-  - Animal
-  - Water
-  - Fly
-  - Climb
-  - Stair
   - Ground
   - Diamond
   - Crate
   - LaserStand
   - Eff_Laser2D
+  - FinishLine
+  - Undefined
+  - CamPos
+  - Enviroment
   layers:
   - Default
   - TransparentFX
@@ -23,7 +21,7 @@ TagManager:
   - Water
   - UI
   - Slider
-  - 
+  - FoodCharacter
   - Character
   - InvisibleToCharacter
   - Obstacle

@@ -11,8 +11,6 @@ namespace HungwX
         private TwoBoneIKConstraint twoBoneIK;
         [SerializeField] private float rotateSpeed = 100;
         private float startRangeY;
-        [SerializeField] private GuidePointManager guidePointManager = default;
-        private bool isInBoneZone = false;
         private Vector3 startPos;
 
         private void Start()
@@ -20,22 +18,17 @@ namespace HungwX
             twoBoneIK = GetComponent<TwoBoneIKConstraint>();
             root = twoBoneIK.data.root;
             tip = twoBoneIK.data.tip;
-            MobileInputManager.Instance.OnPointerMoveAction.AddListener(UpdateBonePosAndRot);
-            guidePointManager.OnGuidePointDown += OnBonePress;
+            MobileInputManager.Instance.OnPointerDownAction.AddListener(OnBonePress);
             startRangeY = tip.position.y - root.position.y;
         }
 
-        private bool CheckBoneOutOfZone(int index)
+        private void OnEnable()
         {
-            return isInBoneZone;
+            MobileInputManager.Instance.OnPointerMoveAction.AddListener(UpdateBonePosAndRot);
         }
 
-        void OnBonePress(int index)
+        void OnBonePress()
         {
-            if (index == transform.GetSiblingIndex())
-            {
-                guidePointManager.CheckScreenPoint = CheckBoneOutOfZone;
-            }
             startPos = this.transform.position;
         }
 
@@ -45,17 +38,13 @@ namespace HungwX
             int direction = tip.position.z > root.position.z ? 1 : -1;
             if (perCentY > 0)
             {
-                this.transform.position = Vector3.MoveTowards(transform.position, startPos, Time.deltaTime * 2);
-                isInBoneZone = false;
             }
             else if (direction == -1)
             {
-                isInBoneZone = true;
                 this.transform.localRotation = Quaternion.Euler((startRangeY - perCentY) * rotateSpeed, 0, 0);
             }
             else
             {
-                isInBoneZone = true;
                 this.transform.localRotation = Quaternion.Euler(Vector3.zero);
             }
 

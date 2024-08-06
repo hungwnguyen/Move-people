@@ -45,8 +45,14 @@ namespace HungwX
             return false;
         }
 
-        protected virtual void Start()
+        protected virtual void OnEnable()
         {
+            StartCoroutine(StartStyling());
+        }
+
+        IEnumerator StartStyling()
+        {
+            yield return new WaitForEndOfFrame();
             gameManager = GameManager.Instance;
             OnStylingStart?.Invoke();
         }

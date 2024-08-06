@@ -53,10 +53,12 @@ namespace HungwX
                     if (index == 1)
                     {
                         SoundManager.ChangeVolumeFXSound(0);
+                        SoundManager.ChangeVolumeBGMusic(0);
                     }
                     else
                     {
                         SoundManager.ChangeVolumeFXSound(1);
+                        SoundManager.ChangeVolumeBGMusic(1);
                     }
                     break;
                 case "Haptic":

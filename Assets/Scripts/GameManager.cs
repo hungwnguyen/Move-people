@@ -14,8 +14,8 @@ namespace HungwX
         public static GameManager Instance { get; set; }
         private List<AlternateStyling> alternateStylings = new List<AlternateStyling>();
         public ProgressController progressController = null;
-        public UnityEvent OnLevelCompleteEvent, OnLevelLoadCompleteEvent;
-        public Action OnLevelReplay;
+        [SerializeField] private UnityEvent OnLevelCompleteEvent = default, OnLevelLoadCompleteEvent = default, OnLevelFailEvent = default;
+        public Action OnLevelReplay, OnLevelComplete, OnLevelFail;
         public float Score { get; set; }
         public int NumberOfCompletedPoints { get; set; }
         private int numberOfStylings;
@@ -25,6 +25,8 @@ namespace HungwX
         [SerializeField]
         private LocalizeStringEvent message = default;
         [SerializeField] private EventTrigger eventTrigger = default;
+        public bool IsGameOver { get; set; }
+        public bool IsWin { get; set; }
 
         void Awake()
         {
@@ -37,7 +39,19 @@ namespace HungwX
             {
                 Destroy(gameObject);
             }
-            OnLevelCompleteEvent.AddListener(PlayMusicWin);
+            OnLevelComplete += PlayMusicWin;
+            OnLevelComplete += OnLevelCompletePopup;
+            OnLevelFail += () => OnLevelFailEvent?.Invoke();
+            IsGameOver = false;
+            IsWin = false;
+            OnLevelReplay += ResetGameStatus;
+        }
+
+        private void ResetGameStatus()
+        {
+            IsGameOver = false;
+            IsWin = false;
+            MobileInputManager.Instance.isPointerDown = false;
         }
 
         void Start()
@@ -48,8 +62,20 @@ namespace HungwX
                 Debug.LogWarning("LevelController is missing in the scene");
                 return;
             }
-            levelController.OnLevelLoadComplete = OnLevelLoadComplete;
+            levelController.OnLevelLoadComplete += OnLevelLoadComplete;
+            levelController.OnLoadNextLevel += ResetGameStatus;
             SetCurrentLevel();
+        }
+
+        public void OnLevelCompletePopup()
+        {
+            StartCoroutine(OpenPopup());
+        }
+
+        IEnumerator OpenPopup()
+        {
+            yield return new WaitForSeconds(2f);
+            OnLevelCompleteEvent.Invoke();
         }
 
         public void SendMessagenger(string value = "null")
@@ -111,7 +137,7 @@ namespace HungwX
             NumberOfCompletedPoints++;
             if (NumberOfCompletedPoints == numberOfStylings)
             {
-                OnLevelCompleteEvent?.Invoke();
+                OnLevelComplete?.Invoke();
             }
         }
 
@@ -135,6 +161,7 @@ namespace HungwX
 
         public void UpdateScore(int index)
         {
+            if (alternateStylings.Count == 0) return;
             float score = 0;
             int count = 0;
             foreach (var styling in alternateStylings)
@@ -149,6 +176,7 @@ namespace HungwX
             score /= numberOfStylings;
             progressController.UpdatePosition(score);
         }
+
         public void ResetLevel()
         {
             Score = 0;
@@ -166,8 +194,8 @@ namespace HungwX
 
         public void ResetCurrentLevel()
         {
+            StopAllCoroutines();
             NumberOfCompletedPoints = 0;
-            OnLevelReplay?.Invoke();
             StartCoroutine(Reset());
             foreach (var styling in alternateStylings)
             {
@@ -176,6 +204,7 @@ namespace HungwX
                     styling.ResetAlternateStyling();
                 }
             }
+            OnLevelReplay?.Invoke();
         }
 
         IEnumerator Reset()

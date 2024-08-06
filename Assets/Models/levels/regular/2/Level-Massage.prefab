@@ -3656,18 +3656,6 @@ MonoBehaviour:
           m_StringArgument: dance
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1012211934996651758}
-        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
-        m_MethodName: Play
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: dance
-          m_BoolArgument: 0
-        m_CallState: 2
       - m_Target: {fileID: 5066000774003261195}
         m_TargetAssemblyTypeName: UnityEngine.GameObject, UnityEngine
         m_MethodName: SetActive
@@ -3702,6 +3690,42 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0.6
+          m_StringArgument: dance
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 1012211934996651758}
+        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: dance
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 3008859794293006797}
+        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: dance
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5559930118658146954}
+        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
           m_StringArgument: dance
           m_BoolArgument: 0
         m_CallState: 2
@@ -6986,6 +7010,7 @@ MonoBehaviour:
     distanceInWorld: {x: 1.7763186, y: 1.9869251, z: 0}
     maxPosInWorld: {x: 1.6259186, y: 11.088255, z: -14.5}
     minPosInWorld: {x: -1.9267185, y: 7.1144047, z: -14.5}
+  isUpdateAllGuidePoint: 0
 --- !u!1 &2067657272414908269
 GameObject:
   m_ObjectHideFlags: 0
@@ -7772,7 +7797,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 6
+      value: 6.8
       mode: 0
       spread: 0
       speed:
@@ -10232,7 +10257,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 10
+      value: 6.8
       mode: 0
       spread: 0
       speed:
@@ -12674,6 +12699,7 @@ MonoBehaviour:
     distanceInWorld: {x: 0.5642438, y: 0, z: 2.4103503}
     maxPosInWorld: {x: 0.49424386, y: 3, z: 3.07543}
     minPosInWorld: {x: -0.6342438, y: 3, z: -1.745271}
+  isUpdateAllGuidePoint: 0
 --- !u!1 &7037020419644436256
 GameObject:
   m_ObjectHideFlags: 0
@@ -13115,7 +13141,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 10
+      value: 6.8
       mode: 0
       spread: 0
       speed:

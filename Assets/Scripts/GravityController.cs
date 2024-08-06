@@ -47,7 +47,7 @@ namespace HungwX
         private void FindGroundPos()
         {
             RaycastHit hit;
-            if (Physics.Raycast(transform.position, Vector3.down, out hit, 1000000))
+            if (Physics.Raycast(transform.position, Vector3.down, out hit))
             {
                 groundPos = hit.point + Vector3.up * distanceY;
             }

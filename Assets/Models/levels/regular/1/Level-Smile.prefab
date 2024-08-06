@@ -1050,7 +1050,7 @@ Light:
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 1
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.6603774, g: 0.6603774, b: 0.6603774, a: 1}
   m_Intensity: 1
   m_Range: 10
   m_SpotAngle: 30
@@ -3294,6 +3294,7 @@ MonoBehaviour:
     distanceInWorld: {x: 0.33, y: 0.5, z: 0}
     maxPosInWorld: {x: 0.75, y: 14.61, z: 1.3040003}
     minPosInWorld: {x: 0.089999974, y: 13.61, z: 1.3040003}
+  isUpdateAllGuidePoint: 0
 --- !u!1 &6861640846775506964
 GameObject:
   m_ObjectHideFlags: 0
@@ -4471,21 +4472,33 @@ MonoBehaviour:
           m_StringArgument: Laugh
           m_BoolArgument: 0
         m_CallState: 2
-  OnLevelReplay:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 6587160371463241901}
+      - m_Target: {fileID: 6587193014269216212}
         m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
-        m_MethodName: Stop
+        m_MethodName: Play
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: 
+          m_StringArgument: Laugh
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 6587010695963896376}
+        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+        m_MethodName: Play
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Laugh
+          m_BoolArgument: 0
+        m_CallState: 2
+  OnLevelReplay:
+    m_PersistentCalls:
+      m_Calls:
       - m_Target: {fileID: 7313303301010731571}
         m_TargetAssemblyTypeName: HungwX.ResetTranform, Assembly-CSharp
         m_MethodName: ResetTransform
@@ -4509,6 +4522,42 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: Idle
           m_BoolArgument: 1
+        m_CallState: 2
+      - m_Target: {fileID: 6587160371463241901}
+        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+        m_MethodName: Stop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6587193014269216212}
+        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+        m_MethodName: Stop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 6587010695963896376}
+        m_TargetAssemblyTypeName: UnityEngine.ParticleSystem, UnityEngine
+        m_MethodName: Stop
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
         m_CallState: 2
   OnLevelLoadComplete:
     m_PersistentCalls:
@@ -4576,6 +4625,10 @@ PrefabInstance:
       propertyPath: EmissionModule.m_Bursts.Array.data[0].countCurve.scalar
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 199968831958862958, guid: 7122621733b7d7a44aab88e255c5f8a8, type: 3}
+      propertyPath: m_SortingOrder
+      value: 2
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -4586,8 +4639,18 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4027716470197158, guid: 7122621733b7d7a44aab88e255c5f8a8, type: 3}
   m_PrefabInstance: {fileID: 6460449903020429112}
   m_PrefabAsset: {fileID: 0}
+--- !u!198 &6587010695963896376 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 198690139983914240, guid: 7122621733b7d7a44aab88e255c5f8a8, type: 3}
+  m_PrefabInstance: {fileID: 6460449903020429112}
+  m_PrefabAsset: {fileID: 0}
 --- !u!198 &6587160371463241901 stripped
 ParticleSystem:
   m_CorrespondingSourceObject: {fileID: 198839531412492181, guid: 7122621733b7d7a44aab88e255c5f8a8, type: 3}
+  m_PrefabInstance: {fileID: 6460449903020429112}
+  m_PrefabAsset: {fileID: 0}
+--- !u!198 &6587193014269216212 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 198802492682586860, guid: 7122621733b7d7a44aab88e255c5f8a8, type: 3}
   m_PrefabInstance: {fileID: 6460449903020429112}
   m_PrefabAsset: {fileID: 0}

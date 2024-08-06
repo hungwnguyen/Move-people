@@ -8,7 +8,6 @@ namespace HungwX
     {
         private int selectedTab = 0;
         private string[] tabTitles = { "Editor", "Setting" };
-        private GameObject selectedGameObject;
         private ObstacleTool obstacleTool;
         private string folderPath = "";
 
@@ -17,7 +16,6 @@ namespace HungwX
             selectedTab = GUILayout.Toolbar(selectedTab, tabTitles);
             obstacleTool = (ObstacleTool)target;
             GUILayout.Space(10);
-            base.OnInspectorGUI();
             switch (selectedTab)
             {
                 case 0:
@@ -34,7 +32,6 @@ namespace HungwX
             if (GUILayout.Button("Reset"))
             {
                 obstacleTool.Reset();
-                selectedGameObject = null;
             }
         }
 
@@ -47,8 +44,7 @@ namespace HungwX
                 if (!string.IsNullOrEmpty(folderPath) && folderPath != "Null")
                 {
                     obstacleTool.SaveCurrentLevelData(PlayerPrefs.GetInt("LevelEditor", 1), folderPath);
-                    Debug.Log($"<color=green>Saved level {PlayerPrefs.GetInt("LevelEditor", 1)} successfully</color>");
-                    PlayerPrefs.SetInt("LevelEditor", PlayerPrefs.GetInt("LevelEditor", 1) + 1);
+                    Debug.Log($"<color=yellow>Saved level {PlayerPrefs.GetInt("LevelEditor", 1)} successfully</color>");
                     AssetDatabase.Refresh();
                 }
                 else
@@ -56,9 +52,21 @@ namespace HungwX
                     Debug.LogError($"Cannot save level {PlayerPrefs.GetInt("LevelEditor", 1)}, please change the data path!");
                 }
             }
+            GUI.color = Color.green;
+            if (GUILayout.Button("Load current level data"))
+            {
+                if (!string.IsNullOrEmpty(folderPath) && folderPath != "Null")
+                {
+                    obstacleTool.LoadCurrentLevelData(PlayerPrefs.GetInt("LevelEditor", 1), folderPath);
+                }
+                else
+                {
+                    Debug.LogError($"Cannot load level {PlayerPrefs.GetInt("LevelEditor", 1)}, please change the data path!");
+                }
+            }   
             GUI.color = Color.white;
             GUILayout.Space(10);
-            
+            FillLevelName();
             DrawFolderPath();
         }
 
@@ -95,9 +103,7 @@ namespace HungwX
             EditorGUILayout.BeginHorizontal();
             GUILayout.Label("Folder Path:");
             folderPath = EditorGUILayout.TextField(PlayerPrefs.GetString("DataPath", folderPath));
-            PlayerPrefs.SetString("DataPath", folderPath);
             EditorGUILayout.EndHorizontal();
-            FillLevelName();
         }
 
         private void FillLevelName()
@@ -116,31 +122,6 @@ namespace HungwX
                 PlayerPrefs.SetInt("LevelEditor", level + 1);
             }
             EditorGUILayout.EndHorizontal();
-        }
-
-        private void OnEnable()
-        {
-            SceneView.duringSceneGui += OnSceneGUICustom;
-        }
-
-        private void OnDisable()
-        {
-            SceneView.duringSceneGui -= OnSceneGUICustom;
-        }
-
-        private void OnSceneGUICustom(SceneView sceneView)
-        {
-            Event e = Event.current;
-            if (e.type == EventType.MouseDown && e.button == 0)
-            {
-                Ray ray = HandleUtility.GUIPointToWorldRay(e.mousePosition);
-                if (Physics.Raycast(ray, out RaycastHit hit))
-                {
-                    selectedGameObject = hit.collider.gameObject;
-                    Repaint();
-                    obstacleTool.UpdateObstacle(selectedGameObject);
-                }
-            }
         }
     }
 }

@@ -1,6 +1,5 @@
 using SuperPack;
 using System.Collections;
-using UnityEditor;
 using UnityEngine;
 
 namespace HungwX
@@ -11,9 +10,9 @@ namespace HungwX
         bool isPress = false;
         bool isResset = false;
         BodyPart bodyPart;
-        protected override void Start()
+        protected override void OnEnable()
         {
-            base.Start();
+            base.OnEnable();
             guidePointManager.OnGuidePointDown += PlayAnimationPress;
             guidePointManager.OnGuidePointUp += PlayAnimationUp;
         }

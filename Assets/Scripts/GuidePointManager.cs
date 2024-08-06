@@ -28,7 +28,8 @@ namespace HungwX
         [NonSerialized] public List<GameObject> guidePointImages;
         private Camera mainCamera;
         private MobileInputManager mobileInputManager;
-        private int countVibration = 0, frequency = 4, targetIndexPressed;
+        private int countVibration = 0, targetIndexPressed;
+        private float frequency = 4;
         private GameManager gameManager;
         [SerializeField] private bool isUpdateAllGuidePoint = false;
         public CheckScreenPointAction CheckScreenPoint;
@@ -54,25 +55,35 @@ namespace HungwX
             return true;
         }
 
-        IEnumerator Start()
+        private void OnEnable()
+        {
+            mobileInputManager = MobileInputManager.Instance;
+            AddEvent();
+        }
+       
+        private IEnumerator Start()
         {
             SetWinZones();
             numberOfPointsSFX = 0;
-            mobileInputManager = MobileInputManager.Instance;
             this.parentOfGuidePoints = mobileInputManager.transform;
             mainCamera = Camera.main;
             yield return new WaitForEndOfFrame();
             CreateGuidePointImages();
+            gameManager = GameManager.Instance;
+            gameManager.SetMobileInput(true);
+            gameManager.OnLevelComplete += ClearGuidePointImages;
+        }
+
+        private void OnDestroy()
+        {
+            gameManager.OnLevelComplete -= ClearGuidePointImages;
+        }
+
+        private void AddEvent()
+        {
             mobileInputManager.OnPointerMoveAction.AddListener(OnPointerMove);
             mobileInputManager.OnPointerDownAction.AddListener(OnPointerDown);
             mobileInputManager.OnPointerUpAction.AddListener(OnPointerUp);
-            gameManager = GameManager.Instance;
-            gameManager.SetMobileInput(true);
-        }
-
-        void OnDestroy()
-        {
-            ClearGuidePointImages();
         }
 
         private void SetWinZones()
@@ -147,6 +158,8 @@ namespace HungwX
             Animator targetAnimator = guidePointImages[targetIndexPressed].GetComponent<Animator>();
             targetAnimator.speed = 1;
             targetAnimator.Play("Pressed");
+            frequency = 4;
+            countVibration = 0;
         }
 
         public void OnPointerMove()
@@ -179,11 +192,11 @@ namespace HungwX
                 guidePointImages[targetIndexPressed].transform.position = mainCamera.WorldToScreenPoint(guidePoints[targetIndexPressed].guidePointPos.position);
             }
             countVibration++;
-            if (countVibration == frequency)
+            if (countVibration >= (int)frequency)
             {
                 MMVibrationManager.Haptic(HapticTypes.Selection, false, true, this);
                 countVibration = 0;
-                frequency = frequency < 8 ? frequency + 1 : 4;
+                frequency = frequency < 8 ? frequency + 0.125f : 8;
             }
             OnGuidePointMove?.Invoke(targetIndexPressed);
             HandleGuidePointMove(targetIndexPressed);
@@ -232,8 +245,8 @@ namespace HungwX
             if (value < min)
                 return min;
             if (value > max)
-            if (value > max)
-                return max;
+                if (value > max)
+                    return max;
             return value;
         }
 
