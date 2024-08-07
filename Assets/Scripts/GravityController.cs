@@ -18,6 +18,7 @@ namespace HungwX
             index = this.transform.GetSiblingIndex();
             pointManager.OnGuidePointUp += UseGravity;
             pointManager.OnGuidePointDown += ResetDO;
+            pointManager.OnGuidePointMove += MustUseGravity;
             FindGroundPos();
             distanceY = transform.position.y - groundPos.y;
         }
@@ -27,9 +28,15 @@ namespace HungwX
             StopAllCoroutines();
         }
 
-        private void UseGravity(int i)
+        public void UseGravity(int i)
         {
             if (i == index)
+                StartCoroutine(MoveToGround(i));
+        }
+
+        public void MustUseGravity(int i)
+        {
+            if (i != index)
                 StartCoroutine(MoveToGround(i));
         }
 

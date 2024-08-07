@@ -55,20 +55,16 @@ namespace HungwX
         {
             return true;
         }
-
-        private void OnEnable()
-        {
-            mobileInputManager = MobileInputManager.Instance;
-            AddEvent();
-        }
        
         private IEnumerator Start()
         {
             SetWinZones();
             numberOfPointsSFX = 0;
+            yield return new WaitForEndOfFrame();
+            mobileInputManager = MobileInputManager.Instance;
+            AddEvent();
             this.parentOfGuidePoints = mobileInputManager.transform;
             mainCamera = Camera.main;
-            yield return new WaitForEndOfFrame();
             CreateGuidePointImages();
             gameManager = GameManager.Instance;
             gameManager.SetMobileInput(true);

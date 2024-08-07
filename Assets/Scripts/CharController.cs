@@ -1,12 +1,13 @@
-using RootMotion;
 using RootMotion.Dynamics;
 using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Animations.Rigging;
 using UnityEngine.Events;
 
 namespace HungwX
 {
+    [RequireComponent(typeof(MultiPositionConstraint))]
     public class CharController : MonoBehaviour
     {
         [SerializeField] private PuppetMaster puppetMaster = default;
@@ -23,6 +24,9 @@ namespace HungwX
         private GameManager manager;
         private UnityAction OnPointerDown, OnPointerUp;
         public static CharController instance;
+        [SerializeField] private MultiPositionConstraint positionConstraint = default;
+        [SerializeField] private GuidePointManager guidePointManager = default;
+
         void OnEnable()
         {
             instance = this;
@@ -32,6 +36,12 @@ namespace HungwX
             manager.OnLevelReplay += ResetCharPos;
             manager.OnLevelReplay += AddEvent;
             AddEvent();
+        }
+
+        private void Start()
+        {
+            guidePointManager.OnGuidePointUp += OnPointerUpAction;
+            guidePointManager.OnGuidePointDown += OnPointerDownAction;
         }
 
         void OnDestroy()
@@ -56,6 +66,22 @@ namespace HungwX
             MobileInputManager.Instance.OnPointerDownAction.RemoveListener(OnPointerDown);
             MobileInputManager.Instance.OnPointerUpAction.RemoveListener(OnPointerUp);
             MobileInputManager.Instance.isPointerDown = false;
+        }
+
+        private void OnPointerDownAction(int index)
+        {
+            var sourceObjects = positionConstraint.data.sourceObjects;
+            sourceObjects.SetWeight(index, 0);
+            sourceObjects.SetWeight((3 - index) % 2, 1);
+            positionConstraint.data.sourceObjects = sourceObjects;
+        }
+
+        private void OnPointerUpAction(int index)
+        {
+            var sourceObjects = positionConstraint.data.sourceObjects;
+            sourceObjects.SetWeight(index, 1);
+            sourceObjects.SetWeight((3 - index) % 2, 1);
+            positionConstraint.data.sourceObjects = sourceObjects;
         }
 
         private void OnPointerDownAction()
