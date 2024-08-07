@@ -28,7 +28,8 @@ namespace HungwX
         [NonSerialized] public List<GameObject> guidePointImages;
         private Camera mainCamera;
         private MobileInputManager mobileInputManager;
-        private int countVibration = 0, targetIndexPressed;
+        private int countVibration = 0, targetIndexPressed, countCheck = 0;
+        //, countCheck = 0
         private float frequency = 4;
         private GameManager gameManager;
         [SerializeField] private bool isUpdateAllGuidePoint = false;
@@ -215,8 +216,16 @@ namespace HungwX
 
         private void YZAxisMove(Vector3 newWorldPosition)
         {
-            if (CheckScreenPoint(targetIndexPressed))
+            //guidePoints[targetIndexPressed].guidePointPos.position = new Vector3(guidePoints[targetIndexPressed].guidePointPos.position.x, newWorldPosition.y, newWorldPosition.z);
+            if (CheckScreenPoint(targetIndexPressed) || countCheck == 1)
+            {
+                countCheck = 0;
                 guidePoints[targetIndexPressed].guidePointPos.position = new Vector3(guidePoints[targetIndexPressed].guidePointPos.position.x, newWorldPosition.y, newWorldPosition.z);
+            }
+            else
+            {
+                countCheck = 1;
+            }
         }
 
         private void XZAxisMove(Vector3 newWorldPosition)

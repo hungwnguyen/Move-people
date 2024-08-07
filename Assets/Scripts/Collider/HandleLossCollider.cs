@@ -20,6 +20,7 @@ namespace HungwX
                 {
                     manager.OnLevelFail?.Invoke();
                     manager.IsGameOver = true;
+                    SoundManager.CreatePlayFXSound(SoundManager.Instance.audioClip.Faild);
                 }
             }
         }

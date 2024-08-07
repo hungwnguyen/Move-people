@@ -470,7 +470,7 @@ MonoBehaviour:
   solverIterationCount: 6
   visualizeTargetPose: 1
   mappingWeight: 1
-  pinWeight: 0.66
+  pinWeight: 0.3
   muscleWeight: 1
   muscleSpring: 100
   muscleDamper: 0
@@ -1065,6 +1065,7 @@ MonoBehaviour:
   guidePoints:
   - guidePointPos: {fileID: 5827491927556007612}
     startPos: {x: 0.526, y: 0.38172984, z: 0.1197114}
+    currentPos: {x: 0, y: 0, z: 0}
     startGuidePointImagePos: {x: 147.7225, y: 255.92043, z: 12.360435}
     score: 0
     perCentWeightInWorld: {x: 0, y: 0, z: 0}
@@ -1074,6 +1075,7 @@ MonoBehaviour:
     minPosInWorld: {x: 0.026000023, y: -0.11827016, z: -0.38028854}
   - guidePointPos: {fileID: 1147277589615055045}
     startPos: {x: -0.526, y: 0.38173008, z: 0.1197114}
+    currentPos: {x: 0, y: 0, z: 0}
     startGuidePointImagePos: {x: 128.83185, y: 293.40976, z: 13.329333}
     score: 0
     perCentWeightInWorld: {x: 0, y: 0, z: 0}
@@ -1514,6 +1516,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotateSpeed: -60
+  guidePointManager: {fileID: 831629041866053833}
 --- !u!1 &1645429074010386034
 GameObject:
   m_ObjectHideFlags: 0
@@ -1796,8 +1799,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   puppetMaster: {fileID: 7867700253955230219}
-  pinWeightDrop: 0.33
-  pinWeightDrag: 0.48
+  pinWeightDrop: 0.3
+  pinWeightDrag: 0.44
   playerAnimator: {fileID: 7098736718057586209}
   charModel: {fileID: 5292001844797007650}
   charStartPosition: {fileID: 5216415381028133169}
@@ -5005,6 +5008,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rotateSpeed: -60
+  guidePointManager: {fileID: 831629041866053833}
 --- !u!1 &4065929557024560377
 GameObject:
   m_ObjectHideFlags: 0

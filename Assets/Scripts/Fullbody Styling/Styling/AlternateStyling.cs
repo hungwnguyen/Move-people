@@ -74,7 +74,6 @@ namespace HungwX
 
         public virtual void ResetAlternateStyling()
         {
-            StopAllCoroutines();
             index = 0;
             guidePointManager.numberOfPointsSFX = 0;
             gameManager.progressController.UpdatePosition(0);
@@ -129,7 +128,7 @@ namespace HungwX
         protected void CheckStyling(int i)
         {
             if (guidePoints[i].isMoveToWinPoint)
-                StartCoroutine(PlayAnimationMoveToWinPoint());
+                StartCoroutine(PlayAnimationMoveToWinPoint(i));
             else
             {
                 ResetGuidPointImage(i);
@@ -141,9 +140,8 @@ namespace HungwX
             ResetGuidPointImage(guidePointManager.guidePointImages[i]);
         }
        
-        IEnumerator PlayAnimationMoveToWinPoint()
+        IEnumerator PlayAnimationMoveToWinPoint(int i)
         {
-            int i = 0 + this.index;
             Image image = guidePointManager.guidePointImages[i].GetComponent<Image>();
             float maxDistance = Vector3.Distance(guidePoints[i].guidePointPos.position, winZones[i].winPos);
             while (i != -1)

@@ -38,9 +38,9 @@ namespace HungwX
             }
             else
             {
-                if (level > 99)
+                if (level > 8)
                 {
-                    ReadCurrentLevelData(Random.Range(50, 100));
+                    ReadCurrentLevelData(Random.Range(4, 8));
                 }
                 else
                 {

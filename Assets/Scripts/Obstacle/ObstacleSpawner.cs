@@ -24,6 +24,10 @@ namespace HungwX
                 DestroyImmediate(gameObject);
             }
             pool = new Dictionary<string, GameObject>();
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                pool["electric" + i] = this.transform.GetChild(i).gameObject;
+            }
         }
 
         private void Start()
@@ -83,7 +87,7 @@ namespace HungwX
             if (typeMark.ContainsKey(key))
             {
                 typeMark[key]++;
-                if (typeMark[key] >= 6)
+                if (typeMark[key] > 6)
                 {
                     typeMark[key] = 0;
                 }

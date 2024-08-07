@@ -77,7 +77,6 @@ namespace HungwX
             ResetEvent();
             puppetMaster.pinWeight = 0;
             playerAnimator.Play("Writhe");
-            SoundManager.CreatePlayFXSound(SoundManager.Instance.audioClip.Die);
         }
 
         private void OnLevelComplete()
@@ -108,15 +107,18 @@ namespace HungwX
 
         IEnumerator ResetCharPosCourountine()
         {
-            charModel.SetActive(false);
-            puppetMaster.pinWeight = 1;
-            currentPosition.position = charStartPosition.position;
-            currentPosition.rotation = charStartPosition.rotation;
-            puppetPos.position = puppetStartPos.position;
-            puppetPos.rotation = puppetStartPos.rotation;
-            yield return new WaitForEndOfFrame();
-            charModel.SetActive(true);
-            puppetMaster.pinWeight = pinWeightDrop;
+            for (int i = 0; i < 2; i++)
+            {
+                charModel.SetActive(false);
+                puppetMaster.pinWeight = 1;
+                currentPosition.position = charStartPosition.position;
+                currentPosition.rotation = charStartPosition.rotation;
+                puppetPos.position = puppetStartPos.position;
+                puppetPos.rotation = puppetStartPos.rotation;
+                yield return new WaitForEndOfFrame();
+                charModel.SetActive(true);
+                puppetMaster.pinWeight = pinWeightDrop;
+            }
         }
     }
 }

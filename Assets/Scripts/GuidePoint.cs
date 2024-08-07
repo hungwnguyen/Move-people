@@ -36,7 +36,7 @@ namespace HungwX
     public class GuidePoint
     {
         public Transform guidePointPos;
-        public Vector3 startPos;
+        public Vector3 startPos, currentPos;
         public Vector3 startGuidePointImagePos;
         public float score;
         public Vector3 perCentWeightInWorld, centerPosInWorld, distanceInWorld, maxPosInWorld, minPosInWorld;
