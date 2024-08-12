@@ -26,7 +26,7 @@ namespace HungwX
         public static CharController instance;
         [SerializeField] private MultiPositionConstraint positionConstraint = default;
         [SerializeField] private GuidePointManager guidePointManager = default;
-
+        [SerializeField] private float minWeight = 0.2f;
         void OnEnable()
         {
             instance = this;
@@ -71,8 +71,7 @@ namespace HungwX
         private void OnPointerDownAction(int index)
         {
             var sourceObjects = positionConstraint.data.sourceObjects;
-            sourceObjects.SetWeight(index, 0);
-            sourceObjects.SetWeight((3 - index) % 2, 1);
+            sourceObjects.SetWeight(index, minWeight);
             positionConstraint.data.sourceObjects = sourceObjects;
         }
 
@@ -100,6 +99,7 @@ namespace HungwX
 
         private void OnLevelFail()
         {
+            StopAllCoroutines();
             ResetEvent();
             puppetMaster.pinWeight = 0;
             playerAnimator.Play("Writhe");
@@ -117,13 +117,16 @@ namespace HungwX
 
         IEnumerator PinWeightSmooth()
         {
-            puppetMaster.pinWeight = pinWeightDrop;
-            while (puppetMaster.pinWeight < pinWeightDrag)
+            if (!GameManager.Instance.IsWin)
             {
-                puppetMaster.pinWeight += Time.deltaTime / speedPin;
-                yield return new WaitForEndOfFrame();
+                puppetMaster.pinWeight = pinWeightDrop;
+                while (puppetMaster.pinWeight < pinWeightDrag)
+                {
+                    puppetMaster.pinWeight += Time.deltaTime / speedPin;
+                    yield return new WaitForEndOfFrame();
+                }
+                puppetMaster.pinWeight = pinWeightDrag;
             }
-            puppetMaster.pinWeight = pinWeightDrag;
         }
 
         public void ResetCharPos()

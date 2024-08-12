@@ -210,6 +210,8 @@ namespace HungwX
         IEnumerator Reset()
         {
             yield return new WaitForSeconds(0.2f);
+            SoundManager.DisableAllMusic();
+            levelController.PlayLevelMusic();
             OnLevelLoadCompleteEvent?.Invoke();
         }
 

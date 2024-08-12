@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Animations.Rigging;
+using System.Collections;
 
 namespace HungwX
 {
@@ -9,11 +10,10 @@ namespace HungwX
     {
         private Transform root = default, tip = default;
         private TwoBoneIKConstraint twoBoneIK;
-        [SerializeField] private float rotateSpeed = 100;
+        [SerializeField] private float rotateSpeed = 100, minZ = 0.2f;
         private float startRangeY;
-        private bool isInBoneZone = false;
-        private Vector3 startPos;
-        [SerializeField] private GuidePointManager guidePointManager;
+
+        private Coroutine rotationCoroutine;
 
         private void Start()
         {
@@ -22,23 +22,17 @@ namespace HungwX
             tip = twoBoneIK.data.tip;
             startRangeY = tip.position.y - root.position.y;
             MobileInputManager.Instance.OnPointerMoveAction.AddListener(UpdateBoneRot);
+            MobileInputManager.Instance.OnPointerUpAction.AddListener(OnPointerUP);
             GameManager.Instance.OnLevelReplay += UpdateBoneRot;
-            guidePointManager = GetComponentInParent<GuidePointManager>();
-            guidePointManager.OnGuidePointDown += OnBonePress;
-            startRangeY = tip.position.y - root.position.y;
-        }
-        private bool CheckBoneOutOfZone(int index)
-        {
-            return isInBoneZone;
         }
 
-        void OnBonePress(int index)
+        void OnPointerUP()
         {
-            if (index == transform.GetSiblingIndex())
+            if (rotationCoroutine != null)
             {
-                guidePointManager.CheckScreenPoint = CheckBoneOutOfZone;
+                StopCoroutine(rotationCoroutine);
             }
-            startPos = this.transform.position;
+            rotationCoroutine = StartCoroutine(SmoothRotate(Quaternion.Euler(Vector3.zero)));
         }
 
         private void OnDestroy()
@@ -49,22 +43,66 @@ namespace HungwX
         private void UpdateBoneRot()
         {
             float perCentY = tip.position.y - root.position.y;
+            float perCentZ = tip.position.z - root.position.z;
             int direction = tip.position.z > root.position.z ? 1 : -1;
+
+            Quaternion targetRotation;
+
             if (perCentY > 0)
             {
-                this.transform.position = Vector3.MoveTowards(transform.position, startPos, Time.deltaTime * 2);
-                isInBoneZone = false;
+                if (direction != -1)
+                {
+                    targetRotation = Quaternion.Euler(-90, 0, 0);
+                }
+                else
+                {
+                    if (perCentZ * -1 > minZ)
+                    {
+                        targetRotation = Quaternion.Euler(90, 0, 0);
+                    }
+                    else
+                    {
+                        targetRotation = Quaternion.Euler(180, 0, 0);
+                    }
+                }
             }
             else if (direction == -1)
             {
-                this.transform.localRotation = Quaternion.Euler((startRangeY - perCentY) * rotateSpeed, 0, 0);
-                isInBoneZone = true;
+                targetRotation = Quaternion.Euler((startRangeY - perCentY) * rotateSpeed, 0, 0);
             }
             else
             {
-                this.transform.localRotation = Quaternion.Euler(Vector3.zero);
-                isInBoneZone = true;
+                if (perCentZ > minZ)
+                {
+                    targetRotation = Quaternion.Euler(-90, 0, 0);
+                }
+                else
+                {
+                    targetRotation = Quaternion.Euler(Vector3.zero);
+                }
             }
+
+            if (rotationCoroutine != null)
+            {
+                StopCoroutine(rotationCoroutine);
+            }
+            rotationCoroutine = StartCoroutine(SmoothRotate(targetRotation));
+        }
+
+        private IEnumerator SmoothRotate(Quaternion targetRotation)
+        {
+            Quaternion initialRotation = transform.localRotation;
+            float elapsedTime = 0f;
+            float duration = 0.2f; // Adjust duration to control how smooth the rotation is
+
+            while (elapsedTime < duration)
+            {
+                transform.localRotation = Quaternion.Slerp(initialRotation, targetRotation, elapsedTime / duration);
+                elapsedTime += Time.deltaTime;
+                yield return null;
+            }
+
+            transform.localRotation = targetRotation;
         }
     }
 }

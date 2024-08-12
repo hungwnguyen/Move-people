@@ -55,7 +55,7 @@ namespace HungwX
 
         public void LoadCurrentLevel()
         {
-            SoundManager.PauseAllMusic();
+            SoundManager.DisableAllMusic();
             ReleaseLevel();
             gameManager.SetCurrentLevel();
             Camera.main.backgroundColor = _levelDatas[CurrentLevelID - 1 > 2 ? 2 : CurrentLevelID - 1].levelCameraColor;
@@ -92,17 +92,23 @@ namespace HungwX
             {
                 InstanceReference = handle.Result;
                 OnLevelLoadComplete?.Invoke();
-                if (CurrentLevelID < 3)
-                {
-                    SoundManager.CreatePlayBgMusic(SoundManager.Instance.audioClip.BgRegularMusic[CurrentLevelID - 1]);
-                } else
-                {
-                    SoundManager.CreatePlayBgMusic(SoundManager.Instance.audioClip.BgRegularMusic[2]);
-                }
+                PlayLevelMusic();
             }
             else
             {
                 Debug.LogError("Failed to load level");
+            }
+        }
+
+        public void PlayLevelMusic()
+        {
+            if (CurrentLevelID < 3)
+            {
+                SoundManager.CreatePlayFXLoop(SoundManager.Instance.audioClip.BgRegularMusic[CurrentLevelID - 1]);
+            }
+            else
+            {
+                SoundManager.CreatePlayFXLoop(SoundManager.Instance.audioClip.BgRegularMusic[2]);
             }
         }
     }

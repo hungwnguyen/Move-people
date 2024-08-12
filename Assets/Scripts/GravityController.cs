@@ -59,13 +59,5 @@ namespace HungwX
                 groundPos = hit.point + Vector3.up * distanceY;
             }
         }
-
-        private void OnDrawGizmosSelected()
-        {
-            FindGroundPos();
-            Gizmos.color = Color.red;
-            Gizmos.DrawSphere(groundPos, 0.1f);
-        }
-
     }
 }
